@@ -1,3 +1,5 @@
+package modelos;
+
 public class paquete {
 
     private int id;

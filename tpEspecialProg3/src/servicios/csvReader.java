@@ -1,4 +1,8 @@
-import java.io.BufferedReader;
+package servicios;
+
+import modelos.camion;
+import modelos.paquete;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
