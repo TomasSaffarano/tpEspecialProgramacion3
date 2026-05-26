@@ -32,23 +32,42 @@ public class Servicios {
 
         /*Servicio 1: Dado un código de paquete (String), retornar toda la información
         del paquete asociado. En caso de no existir, retornar null.*/
+
+        if(paquetes==null){
+            return null;
+        }
+
         if(codigoPaquete==null){
             return null;
         }
-        if(paquetes!=null){
-            Paquete paquete = this.getPaquetePorCodigo(codigoPaquete);
-            if(paquete != null){
-                return paquete;
-            }
+
+        Paquete paquete = this.getPaquetePorCodigo(codigoPaquete);
+        if(paquete != null){
+            return paquete;
         }
+
         return null;
     }
     /*
-     * Expresar la complejidad temporal del servicio 2.
+     * Expresar la complejidad temporal del servicio 2: O(n) n: cantidad paquetes
+     * recorro una vez el array de paquetes
      */
     public List<Paquete> servicio2(boolean contieneAlimentos) {
-        //TO DO
-        return null;
+        /* Dado un booleano que indica si se buscan paquetes que
+        * contienen alimentos (true) o que no contienen alimentos (false), retornar el
+        * listado de paquetes correspondiente. */
+        if(paquetes==null){
+            return new ArrayList<>();
+        }
+
+
+        List<Paquete> paquetesQueCumplen = new ArrayList<>();
+        for(Paquete paquete : paquetes){
+            if(paquete.isContieneAlimentos()==contieneAlimentos){
+                paquetesQueCumplen.add(paquete);
+            }
+        }
+        return paquetesQueCumplen;
     }
     /*
      * Expresar la complejidad temporal del servicio 3.
@@ -72,7 +91,7 @@ public class Servicios {
 
 
     //COMPLEJIDAD O(n) n: cantidad paquetes
-    public Paquete getPaquetePorCodigo(String codigoPaquete) {
+    private Paquete getPaquetePorCodigo(String codigoPaquete) {
         for (Paquete paquete : paquetes) {
             if (paquete.getCodigo().equals(codigoPaquete)) {
                 return paquete;
@@ -80,4 +99,7 @@ public class Servicios {
         }
         return null;
     }
+
+
+
 }

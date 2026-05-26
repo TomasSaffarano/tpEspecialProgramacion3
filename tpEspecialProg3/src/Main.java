@@ -7,20 +7,12 @@ public class Main {
 
         Servicios servicios = new Servicios("/csv/camiones.csv", "/csv/paquetes.csv");
 
-/*        System.out.println("CAMIONES:");
-        for (Camion c : camiones) {
-            System.out.println(c);
-        }
-
-        System.out.println("\nPAQUETES:");
-        for (Paquete p : paquetes) {
-            System.out.println(p);
-        }
-*/
-
-        
         System.out.println(servicios.servicio1("noexiste"));
         System.out.println(servicios.servicio1("P001"));
+
+        System.out.println(servicios.servicio2(true));
+        System.out.println("----------------------------------------");
+        System.out.println(servicios.servicio2(false));
 
 
 
