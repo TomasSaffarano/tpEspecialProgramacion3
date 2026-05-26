@@ -1,13 +1,13 @@
 package modelos;
 
-public class camion {
+public class Camion {
 
     private int id;
     private String patente;
     private boolean refrigerado;
     private double capacidadKg;
 
-    public camion(int id, String patente, boolean refrigerado, double capacidadKg) {
+    public Camion(int id, String patente, boolean refrigerado, double capacidadKg) {
         this.id = id;
         this.patente = patente;
         this.refrigerado = refrigerado;

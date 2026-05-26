@@ -1,6 +1,6 @@
 package modelos;
 
-public class paquete {
+public class Paquete {
 
     private int id;
     private String codigo;
@@ -8,7 +8,7 @@ public class paquete {
     private boolean contieneAlimentos;
     private int nivelUrgencia;
 
-    public paquete(int id, String codigo, double pesoKg, boolean contieneAlimentos, int nivelUrgencia) {
+    public Paquete(int id, String codigo, double pesoKg, boolean contieneAlimentos, int nivelUrgencia) {
         this.id = id;
         this.codigo = codigo;
         this.pesoKg = pesoKg;

@@ -1,20 +1,20 @@
 package servicios;
 
-import modelos.camion;
-import modelos.paquete;
+import modelos.Camion;
+import modelos.Paquete;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class csvReader {
+public class CSVReader {
 
-    public static ArrayList<camion> leerCamiones(String path) {
-        ArrayList<camion> camiones = new ArrayList<>();
+    public static ArrayList<Camion> leerCamiones(String path) {
+        ArrayList<Camion> camiones = new ArrayList<>();
 
         try {
-            InputStream is = csvReader.class.getResourceAsStream(path);
+            InputStream is = CSVReader.class.getResourceAsStream(path);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             int total = Integer.parseInt(br.readLine());
@@ -28,7 +28,7 @@ public class csvReader {
                 boolean refrigerado = partes[2].equals("1");
                 double capacidad = Double.parseDouble(partes[3]);
 
-                camiones.add(new camion(id, patente, refrigerado, capacidad));
+                camiones.add(new Camion(id, patente, refrigerado, capacidad));
             }
 
             br.close();
@@ -40,11 +40,11 @@ public class csvReader {
         return camiones;
     }
 
-    public static ArrayList<paquete> leerPaquetes(String path) {
-        ArrayList<paquete> paquetes = new ArrayList<>();
+    public static ArrayList<Paquete> leerPaquetes(String path) {
+        ArrayList<Paquete> paquetes = new ArrayList<>();
 
         try {
-            InputStream is = csvReader.class.getResourceAsStream(path);
+            InputStream is = CSVReader.class.getResourceAsStream(path);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             int total = Integer.parseInt(br.readLine());
@@ -59,7 +59,7 @@ public class csvReader {
                 boolean alimentos = partes[3].equals("1");
                 int urgencia = Integer.parseInt(partes[4]);
 
-                paquetes.add(new paquete(id, codigo, peso, alimentos, urgencia));
+                paquetes.add(new Paquete(id, codigo, peso, alimentos, urgencia));
             }
 
             br.close();
