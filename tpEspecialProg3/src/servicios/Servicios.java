@@ -41,9 +41,11 @@ public class Servicios {
             return null;
         }
 
-        Paquete paquete = this.getPaquetePorCodigo(codigoPaquete);
-        if(paquete != null){
-            return paquete;
+        for (Paquete paquete : paquetes) {
+            if (paquete.getCodigo().equals(codigoPaquete)) {
+                //retorna la primera vez que coincide, se eliminan segundas coincidencias
+                return paquete;
+            }
         }
 
         return null;
@@ -70,12 +72,39 @@ public class Servicios {
         return paquetesQueCumplen;
     }
     /*
-     * Expresar la complejidad temporal del servicio 3.
+     * Expresar la complejidad temporal del servicio 3: O(n) n: cantidad paquetes
+     * recorro una vez el array de paquetes
      */
     public List<Paquete> servicio3(int urgenciaMinima, int
             urgenciaMaxima) {
-        //TO DO
-        return null;
+        /* Dados dos valores enteros que representan un nivel de urgencia
+        * mínimo y máximo, retornar todos los paquetes cuyo nivel de urgencia se
+        * encuentre dentro de ese rango (inclusive).*/
+
+        if(paquetes==null){
+            return new ArrayList<>();
+        }
+
+        if(urgenciaMinima<0 || urgenciaMaxima<0){
+            return new ArrayList<>();
+        }
+
+        if(urgenciaMinima>urgenciaMaxima){
+            int aux = urgenciaMaxima;
+            urgenciaMaxima = urgenciaMinima;
+            urgenciaMinima = aux;
+            System.out.println("Se han dislexeado los numeros, los di vuelta...");
+        }
+
+        List<Paquete> paquetesQueCumplen = new ArrayList<>();
+        for(Paquete paquete : paquetes){
+            int urgencia = paquete.getNivelUrgencia();
+            if(urgenciaMinima <= urgencia &&
+                    urgencia <= urgenciaMaxima){
+                paquetesQueCumplen.add(paquete);
+            }
+        }
+        return paquetesQueCumplen;
     }
 
 
@@ -88,7 +117,7 @@ public class Servicios {
 *
 *
 * */
-
+/*
 
     //COMPLEJIDAD O(n) n: cantidad paquetes
     private Paquete getPaquetePorCodigo(String codigoPaquete) {
@@ -100,6 +129,6 @@ public class Servicios {
         return null;
     }
 
-
+*/
 
 }
