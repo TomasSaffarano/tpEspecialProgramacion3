@@ -1,17 +1,13 @@
-import modelos.Camion;
-import modelos.Paquete;
-import servicios.CSVReader;
-
-import java.util.ArrayList;
+import servicios.Servicios;
 
 public class Main {
 
     public static void main(String[] args) {
+        //"/csv/camiones.csv"
 
-        ArrayList<Camion> camiones = CSVReader.leerCamiones("/csv/camiones.csv");
-        ArrayList<Paquete> paquetes = CSVReader.leerPaquetes("/csv/paquetes.csv");
+        Servicios servicios = new Servicios("/csv/camiones.csv", "/csv/paquetes.csv");
 
-        System.out.println("CAMIONES:");
+/*        System.out.println("CAMIONES:");
         for (Camion c : camiones) {
             System.out.println(c);
         }
@@ -20,5 +16,13 @@ public class Main {
         for (Paquete p : paquetes) {
             System.out.println(p);
         }
+*/
+
+        
+        System.out.println(servicios.servicio1("noexiste"));
+        System.out.println(servicios.servicio1("P001"));
+
+
+
     }
 }
