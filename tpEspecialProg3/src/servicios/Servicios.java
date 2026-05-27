@@ -14,7 +14,9 @@ public class Servicios {
     /*Completar con las estructuras y métodos privados que se
    * requieran
     *
-     * Expresar la complejidad temporal del constructor.
+     * Expresar la complejidad temporal del constructor: O(c+p)
+     * ya que recorre todos los camiones y todos los paquetes, ademas de 
+     * reocorrer la estructura de archivos para encontrar los csv y parsearlos
      */
     public Servicios(String pathCamiones, String pathPaquetes){
         camiones = new ArrayList<>();
@@ -25,8 +27,7 @@ public class Servicios {
 
     /*
      * Expresar la complejidad temporal del servicio 1: O(n) n: cantidad de paquetes.
-     * La complejidad se calcula por tener una llamada a un metodo
-     * cuya complejidad es O(n)
+     * La complejidad se calcula por tener que recorrer todos los paquetes. 
      */
     public Paquete servicio1(String codigoPaquete) {
 
@@ -113,9 +114,9 @@ public class Servicios {
 *
 *
 *   METODOS INTERNOS AUXILIARES
+* 
 *
-*
-*
+*. queda comentado por no volver a ser utilizada la logica por ahora. veremos segunda parte
 * */
 /*
 
