@@ -110,14 +110,119 @@ public class Servicios {
 
 
 
+
+    /*
+     *
+     *
+     *   SEGUNDA PARTE
+     *
+     *
+     *
+     *
+Se desea establecer una asignación de todos los paquetes a los camiones
+disponibles con el objetivo de minimizar el peso total de los paquetes que no
+pudieron ser asignados a ningún camión.
+Se sabe que existen ciertas restricciones para asignar un paquete a un camión:
+• Primero, ningún camión podrá superar su capacidad máxima de carga. La
+capacidad de cada camión está definida en el archivo de entrada.
+• Segundo, los paquetes que contienen alimentos sólo podrán ser asignados
+a camiones refrigerados.
+     * */
+
+    //robo del ejercicio 5 de backtraking
 /*
-*
-*
-*   METODOS INTERNOS AUXILIARES
-* 
-*
-*. queda comentado por no volver a ser utilizada la logica por ahora. veremos segunda parte
-* */
+dejo el esqueleto para que lo debatamos por discord
+    private int mejorTiempo;
+    private int[] mejorAsignacion;
+
+    public int[] asignarTareas(
+            int[] tareas,
+            int cantidadProcesadores) {
+
+        int[] cargas = new int[cantidadProcesadores];
+
+        int[] asignacionActual = new int[tareas.length];
+
+        mejorTiempo = Integer.MAX_VALUE;
+
+        mejorAsignacion =
+                new int[tareas.length];
+
+        asignarProcesos(
+                tareas,
+                0,
+                cargas,
+                asignacionActual);
+
+        return mejorAsignacion;
+    }
+
+
+    private void asignarProcesos(int[] tareas, int index, int[] cargas,
+                                 int[] asignacionActual) {
+        // caso base
+        if (index == tareas.length) {
+
+            int tiempoTotal = obtenerMaximo(cargas);
+
+            if (tiempoTotal < mejorTiempo) {
+
+                mejorTiempo = tiempoTotal;
+
+                mejorAsignacion = Arrays.copyOf(asignacionActual,
+                                asignacionActual.length);
+            }
+
+            return;
+        }
+
+        // probar cada procesador
+        for (int p = 0; p < cargas.length; p++) {
+
+            // asignar tarea al procesador p
+            cargas[p] += tareas[index];
+
+            asignacionActual[index] = p;
+
+            asignarProcesos(
+                    tareas,
+                    index + 1,
+                    cargas,
+                    asignacionActual);
+
+            // BACKTRACKING
+            cargas[p] -= tareas[index];
+        }
+    }
+
+    private int obtenerMaximo(int[] cargas) {
+
+        int max = cargas[0];
+
+        for (int c : cargas) {
+
+            if (c > max) {
+                max = c;
+            }
+        }
+
+        return max;
+    }*/
+
+
+
+
+
+
+
+    /*
+     *
+     *
+     *   METODOS INTERNOS AUXILIARES
+     *
+     *
+     *. queda comentado por no volver a ser utilizada la logica por ahora. veremos segunda parte
+     * */
 /*
 
     //COMPLEJIDAD O(n) n: cantidad paquetes
