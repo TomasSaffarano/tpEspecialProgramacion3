@@ -3,8 +3,7 @@ package servicios;
 import modelos.Camion;
 import modelos.Paquete;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Servicios {
 
@@ -127,10 +126,10 @@ Se sabe que existen ciertas restricciones para asignar un paquete a un camión:
 capacidad de cada camión está definida en el archivo de entrada.
 • Segundo, los paquetes que contienen alimentos sólo podrán ser asignados
 a camiones refrigerados.
-     * */
+     *
+     *
+     *   //robo del ejercicio 5 de backtraking
 
-    //robo del ejercicio 5 de backtraking
-/*
 dejo el esqueleto para que lo debatamos por discord
     private int mejorTiempo;
     private int[] mejorAsignacion;
@@ -156,9 +155,8 @@ dejo el esqueleto para que lo debatamos por discord
 
         return mejorAsignacion;
     }
-
-
-    private void asignarProcesos(int[] tareas, int index, int[] cargas,
+    *
+    *  private void asignarProcesos(int[] tareas, int index, int[] cargas,
                                  int[] asignacionActual) {
         // caso base
         if (index == tareas.length) {
@@ -207,52 +205,102 @@ dejo el esqueleto para que lo debatamos por discord
         }
 
         return max;
-    }*/
+     }
+         * */
 
 
-/* robo mochila fraccionaria con greedy
+/* robo mochila fraccionaria con greedy*/
+
+    private static int urgenciaMaxima=100;
+    private static int urgenciaMinima=50;
+    //variables de clase permite que sea editable solo en codigo (por desarrolladores o podria ser un admin si se
+    // habilita un getter y setter) y que sea customizable por cliente...
 
 
-    public double[] getCantidadPorObjeto(ObjetoMochila[] objetos, double pesoDisponible){
-        if(pesoDisponible<=0){
-            return null;
+    //patente --> lista de paquetes
+    public Map<String,List<Paquete>> greedy(){
+
+        ArrayList<Camion> camionesGreedy = new ArrayList<>();
+        ArrayList<Paquete> paquetesGreedyUrgentes = new ArrayList<>();
+        ArrayList<Paquete> paquetesGreedyMenosUrgentes = new ArrayList<>();
+
+        if(paquetes==null) return new HashMap<>();
+        else{
+            paquetesGreedyUrgentes = (ArrayList<Paquete>) this.servicio3(urgenciaMinima,urgenciaMaxima);
+            paquetesGreedyMenosUrgentes = (ArrayList<Paquete>) this.servicio3(0,urgenciaMinima);
         }
+        if(camiones==null) return new HashMap<>();
+        else camionesGreedy = camiones;
 
-        double[] cantidadObjetos = new double[objetos.length];
-        //aca deberia ser un map donde indique nombre objeto y su fraccion
+        Map<String,List<Paquete>> optimizacion = new HashMap<>();
+
 
         //primero ordenar los objetos por valorPorKg...
 
-        Arrays.sort(objetos,
-                (o1, o2) -> Double.compare(
-                        o2.getValor()/o2.getPesoKG(), //valorPorKilogramo
-                        o1.getValor()/o1.getPesoKG()
-                )); //restriccion para pesos negativos, o evitar en la creacion (constructor objeto mochila)
-        //luego...
 
-        for(int i=0;i<cantidadObjetos.length;i++){
+//vamos a ordenar aca por: camiones por peso
+        camionesGreedy.sort(
+                Comparator.comparingDouble(
+                        Camion::getCapacidadKg
+                ).reversed()
+        );
 
-            ObjetoMochila objeto = objetos[i];
 
-            if(objeto.getPesoKG()>0){
 
-                if(objeto.getPesoKG() <= pesoDisponible){
-                    cantidadObjetos[i]=1.0;
-                    pesoDisponible-=objeto.getPesoKG();
-                }else {
-                    cantidadObjetos[i] =
-                            pesoDisponible / objeto.getPesoKG();
+        //paquetes por franja de prioridad, peso paquete y luego urgencia
+        paquetesGreedyUrgentes.sort(
+                Comparator
+                        .comparingDouble(
+                                Paquete::getPesoKg
+                        ).reversed()
+                        .thenComparing(
+                                Comparator.comparingInt(Paquete::getNivelUrgencia)
+                                        .reversed()
+                        ));
+
+        paquetesGreedyMenosUrgentes.sort(
+                Comparator
+                        .comparingDouble(
+                                Paquete::getPesoKg
+                        ).reversed()
+                        .thenComparing(
+                                Comparator.comparingInt(Paquete::getNivelUrgencia)
+                                        .reversed()
+                        ));
+
+
+        ArrayList<Paquete> paquetesGreedyTotal= new ArrayList<>();
+        paquetesGreedyTotal.addAll(paquetesGreedyUrgentes);
+        paquetesGreedyTotal.addAll(paquetesGreedyMenosUrgentes);
+        //revisar como se ordenan con el add All y si se mantienen
+
+//primero un for por cada urgente, luego vemo
+        for(Camion camion : camionesGreedy){
+            double pesoDisponible = camion.getCapacidadKg();
+            List<Paquete> paquetesAlCamion = new ArrayList<>();
+
+            //faltan de alimentos y refrigerados
+            for(Paquete paq: paquetesGreedyTotal) {
+                if(paq.getPesoKg()>0){
+                    if(paq.getPesoKg() <= pesoDisponible){
+                        paquetesAlCamion.add(paq);
+                        pesoDisponible-=paq.getPesoKg();
+                        paquetesGreedyTotal.remove(paq);
+                    }
+                }
+                if(pesoDisponible==0) {
                     break;
                 }
-
-
+                //paso al proximo camion, antes tengo que ver como lo añado al map del response
             }
+
 
         }
 
-        return cantidadObjetos;
+
+        return optimizacion; // no es un map, hay que devlver el peso no asignado... refactorizar
     }
- */
+
 
 
 
