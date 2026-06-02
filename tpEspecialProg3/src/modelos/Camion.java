@@ -11,6 +11,9 @@ public class Camion {
         this.id = id;
         this.patente = patente;
         this.refrigerado = refrigerado;
+        if(capacidadKg <= 0){
+            throw new IllegalArgumentException("Capacidad negativo");
+        }
         this.capacidadKg = capacidadKg;
     }
 

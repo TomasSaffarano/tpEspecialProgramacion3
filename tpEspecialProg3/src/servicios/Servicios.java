@@ -210,7 +210,49 @@ dejo el esqueleto para que lo debatamos por discord
     }*/
 
 
+/* robo mochila fraccionaria con greedy
 
+
+    public double[] getCantidadPorObjeto(ObjetoMochila[] objetos, double pesoDisponible){
+        if(pesoDisponible<=0){
+            return null;
+        }
+
+        double[] cantidadObjetos = new double[objetos.length];
+        //aca deberia ser un map donde indique nombre objeto y su fraccion
+
+        //primero ordenar los objetos por valorPorKg...
+
+        Arrays.sort(objetos,
+                (o1, o2) -> Double.compare(
+                        o2.getValor()/o2.getPesoKG(), //valorPorKilogramo
+                        o1.getValor()/o1.getPesoKG()
+                )); //restriccion para pesos negativos, o evitar en la creacion (constructor objeto mochila)
+        //luego...
+
+        for(int i=0;i<cantidadObjetos.length;i++){
+
+            ObjetoMochila objeto = objetos[i];
+
+            if(objeto.getPesoKG()>0){
+
+                if(objeto.getPesoKG() <= pesoDisponible){
+                    cantidadObjetos[i]=1.0;
+                    pesoDisponible-=objeto.getPesoKG();
+                }else {
+                    cantidadObjetos[i] =
+                            pesoDisponible / objeto.getPesoKG();
+                    break;
+                }
+
+
+            }
+
+        }
+
+        return cantidadObjetos;
+    }
+ */
 
 
 

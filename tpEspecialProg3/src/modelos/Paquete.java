@@ -11,6 +11,9 @@ public class Paquete {
     public Paquete(int id, String codigo, double pesoKg, boolean contieneAlimentos, int nivelUrgencia) {
         this.id = id;
         this.codigo = codigo;
+        if(pesoKg <= 0){
+            throw new IllegalArgumentException("Peso negativo");
+        }
         this.pesoKg = pesoKg;
         this.contieneAlimentos = contieneAlimentos;
         this.nivelUrgencia = nivelUrgencia;
@@ -37,6 +40,9 @@ public class Paquete {
     }
 
     public void setPesoKg(double pesoKg) {
+        if(pesoKg <= 0){
+            throw new IllegalArgumentException("Peso negativo");
+        }
         this.pesoKg = pesoKg;
     }
 
