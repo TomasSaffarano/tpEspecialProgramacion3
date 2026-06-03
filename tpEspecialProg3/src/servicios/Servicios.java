@@ -10,27 +10,10 @@ public class Servicios {
     private  ArrayList<Camion> camiones;
     private  ArrayList<Paquete> paquetes;
 
-    private static int urgenciaMaxima=100;
-    private static int urgenciaMinima=50;
+    private int urgenciaMaxima=100;
+    private int urgenciaMinima=80;
     //variables de clase permite que sea editable solo en codigo (por desarrolladores o podria ser un admin si se
     // habilita un getter y setter) y que sea customizable por cliente...
-
-
-    public static int getUrgenciaMaxima() {
-        return urgenciaMaxima;
-    }
-
-    public static void setUrgenciaMaxima(int urgenciaMaxima) {
-        Servicios.urgenciaMaxima = urgenciaMaxima;
-    }
-
-    public static int getUrgenciaMinima() {
-        return urgenciaMinima;
-    }
-
-    public static void setUrgenciaMinima(int urgenciaMinima) {
-        Servicios.urgenciaMinima = urgenciaMinima;
-    }
 
 
     /*
@@ -326,8 +309,7 @@ dejo el esqueleto para que lo debatamos por discord
                     pesoDisponible -= paq.getPesoKg();
 
                     it.remove();
-                    paquetesGreedyTotal.remove(paq);
-                    //lo elimino de ambas 
+                    //al eliminarlo sobre el iterador lo elimino de ambas
                 }
 
                 if(pesoDisponible == 0){

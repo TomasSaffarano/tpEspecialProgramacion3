@@ -21,6 +21,7 @@ public class Main {
 */
 
         // servicio 3
+        /*
         System.out.println(servicios.servicio3(-1,6));
         System.out.println("----------------------------------------");
         System.out.println(servicios.servicio3(50,1));
@@ -34,6 +35,13 @@ public class Main {
 
         System.out.println("---------------------------------------- todos:");
         System.out.println(servicios.servicio3(2,100));
+*/
+
+        //parte dos
+
+        //greedy:
+
+        System.out.println(servicios.greedy());
 
 
 
