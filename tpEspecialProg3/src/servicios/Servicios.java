@@ -10,9 +10,30 @@ public class Servicios {
     private  ArrayList<Camion> camiones;
     private  ArrayList<Paquete> paquetes;
 
-    /*Completar con las estructuras y métodos privados que se
-   * requieran
-    *
+    private static int urgenciaMaxima=100;
+    private static int urgenciaMinima=50;
+    //variables de clase permite que sea editable solo en codigo (por desarrolladores o podria ser un admin si se
+    // habilita un getter y setter) y que sea customizable por cliente...
+
+
+    public static int getUrgenciaMaxima() {
+        return urgenciaMaxima;
+    }
+
+    public static void setUrgenciaMaxima(int urgenciaMaxima) {
+        Servicios.urgenciaMaxima = urgenciaMaxima;
+    }
+
+    public static int getUrgenciaMinima() {
+        return urgenciaMinima;
+    }
+
+    public static void setUrgenciaMinima(int urgenciaMinima) {
+        Servicios.urgenciaMinima = urgenciaMinima;
+    }
+
+
+    /*
      * Expresar la complejidad temporal del constructor: O(c+p)
      * ya que recorre todos los camiones y todos los paquetes, ademas de 
      * reocorrer la estructura de archivos para encontrar los csv y parsearlos
@@ -22,6 +43,15 @@ public class Servicios {
         camiones = CSVReader.leerCamiones(pathCamiones);
         paquetes = new ArrayList<>();
         paquetes =  CSVReader.leerPaquetes(pathPaquetes);
+    }
+
+    public Servicios(String pathCamiones, String pathPaquetes, int urgenciaMinima, int urgenciaMaxima){
+        camiones = new ArrayList<>();
+        camiones = CSVReader.leerCamiones(pathCamiones);
+        paquetes = new ArrayList<>();
+        paquetes =  CSVReader.leerPaquetes(pathPaquetes);
+        this.urgenciaMinima = urgenciaMinima;
+        this.urgenciaMaxima = urgenciaMaxima;
     }
 
     /*
@@ -209,45 +239,41 @@ dejo el esqueleto para que lo debatamos por discord
          * */
 
 
-/* robo mochila fraccionaria con greedy*/
+/*
+*
+* Complejidad O()
+*
+* */
 
-    private static int urgenciaMaxima=100;
-    private static int urgenciaMinima=50;
-    //variables de clase permite que sea editable solo en codigo (por desarrolladores o podria ser un admin si se
-    // habilita un getter y setter) y que sea customizable por cliente...
-
-
-    //patente --> lista de paquetes
-    public Map<String,List<Paquete>> greedy(){
+    //devuelve kg restantes
+    public double greedy(){
 
         ArrayList<Camion> camionesGreedy = new ArrayList<>();
         ArrayList<Paquete> paquetesGreedyUrgentes = new ArrayList<>();
         ArrayList<Paquete> paquetesGreedyMenosUrgentes = new ArrayList<>();
 
-        if(paquetes==null) return new HashMap<>();
+        if(paquetes==null) return 00.00;
         else{
+            if(urgenciaMinima>urgenciaMaxima){
+                int aux = urgenciaMaxima;
+                urgenciaMaxima = urgenciaMinima;
+                urgenciaMinima = aux;
+            }
             paquetesGreedyUrgentes = (ArrayList<Paquete>) this.servicio3(urgenciaMinima,urgenciaMaxima);
             paquetesGreedyMenosUrgentes = (ArrayList<Paquete>) this.servicio3(0,urgenciaMinima);
         }
-        if(camiones==null) return new HashMap<>();
+
+        if(camiones==null) return 0.0;
         else camionesGreedy = camiones;
 
-        Map<String,List<Paquete>> optimizacion = new HashMap<>();
-
-
-        //primero ordenar los objetos por valorPorKg...
-
-
-//vamos a ordenar aca por: camiones por peso
+        //vamos a ordenar camiones por peso
         camionesGreedy.sort(
                 Comparator.comparingDouble(
                         Camion::getCapacidadKg
                 ).reversed()
         );
 
-
-
-        //paquetes por franja de prioridad, peso paquete y luego urgencia
+        //paquetes por franja de prioridad, son dos grupos, se ordena cada uno por peso y luego urgencia
         paquetesGreedyUrgentes.sort(
                 Comparator
                         .comparingDouble(
@@ -272,33 +298,51 @@ dejo el esqueleto para que lo debatamos por discord
         ArrayList<Paquete> paquetesGreedyTotal= new ArrayList<>();
         paquetesGreedyTotal.addAll(paquetesGreedyUrgentes);
         paquetesGreedyTotal.addAll(paquetesGreedyMenosUrgentes);
-        //revisar como se ordenan con el add All y si se mantienen
+        //el add All mantiene el orden que queremos de urgentes por peso, prioridad - menos urgentes por peso, prioridad
 
-//primero un for por cada urgente, luego vemo
+        //primero por cada camion para llenarlos todos...
+
+
         for(Camion camion : camionesGreedy){
+
             double pesoDisponible = camion.getCapacidadKg();
-            List<Paquete> paquetesAlCamion = new ArrayList<>();
+//            List<Paquete> paquetesAlCamion = new ArrayList<>();
+            Iterator<Paquete> it = paquetesGreedyTotal.iterator();
 
-            //faltan de alimentos y refrigerados
-            for(Paquete paq: paquetesGreedyTotal) {
-                if(paq.getPesoKg()>0){
-                    if(paq.getPesoKg() <= pesoDisponible){
-                        paquetesAlCamion.add(paq);
-                        pesoDisponible-=paq.getPesoKg();
-                        paquetesGreedyTotal.remove(paq);
-                    }
+            while(it.hasNext()){
+
+                Paquete paq = it.next();
+
+                //si no es refrigerado el camion pero paquete es de alimentos, se saltea...
+                if(paq.isContieneAlimentos()
+                        && !camion.isRefrigerado()){
+                    continue;
                 }
-                if(pesoDisponible==0) {
-                    break;
+
+                if(paq.getPesoKg() <= pesoDisponible){
+
+                    //paquetesAlCamion.add(paq); no retorno una lista de paquetes por camion, sino el kg sobrante
+
+                    pesoDisponible -= paq.getPesoKg();
+
+                    it.remove();
+                    paquetesGreedyTotal.remove(paq);
+                    //lo elimino de ambas 
                 }
-                //paso al proximo camion, antes tengo que ver como lo añado al map del response
+
+                if(pesoDisponible == 0){
+                    break; //paso al proximo camion
+                }
             }
-
-
         }
 
-
-        return optimizacion; // no es un map, hay que devlver el peso no asignado... refactorizar
+        double resto = 0.0;
+        if(!paquetesGreedyTotal.isEmpty()){
+            for(Paquete paquete : paquetesGreedyTotal){
+                resto +=paquete.getPesoKg();
+            }
+        }
+        return resto;
     }
 
 
