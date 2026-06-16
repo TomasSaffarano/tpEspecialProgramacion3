@@ -227,7 +227,7 @@ dejo el esqueleto para que lo debatamos por discord
 
 
 
-        
+
         return 0.0;
     }
 
@@ -271,8 +271,7 @@ dejo el esqueleto para que lo debatamos por discord
 
         //paquetes por franja de prioridad, son dos grupos, se ordena cada uno por peso y luego urgencia
         paquetesGreedyUrgentes.sort(
-                Comparator
-                        .comparingDouble(
+                Comparator.comparingDouble(
                                 Paquete::getPesoKg
                         ).reversed()
                         .thenComparing(
