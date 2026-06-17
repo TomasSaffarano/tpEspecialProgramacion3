@@ -10,6 +10,11 @@ public class Servicios {
     private  ArrayList<Camion> camiones;
     private  ArrayList<Paquete> paquetes;
 
+
+    private double mejorPeso;
+    private HashMap<Camion,ArrayList<Paquete>> mejorAsignacion;
+    //variables para optimizacion de paso de informacion en metodo backtracking
+
     private int urgenciaMaxima=100;
     private int urgenciaMinima=80;
     //variables de clase permite que sea editable solo en codigo (por desarrolladores o podria ser un admin si se
@@ -18,7 +23,7 @@ public class Servicios {
 
     /*
      * Expresar la complejidad temporal del constructor: O(c+p)
-     * ya que recorre todos los camiones y todos los paquetes, ademas de 
+     * ya que recorre todos los camiones y todos los paquetes, ademas de
      * reocorrer la estructura de archivos para encontrar los csv y parsearlos
      */
     public Servicios(String pathCamiones, String pathPaquetes){
@@ -39,7 +44,7 @@ public class Servicios {
 
     /*
      * Expresar la complejidad temporal del servicio 1: O(n) n: cantidad de paquetes.
-     * La complejidad se calcula por tener que recorrer todos los paquetes. 
+     * La complejidad se calcula por tener que recorrer todos los paquetes.
      */
     public Paquete servicio1(String codigoPaquete) {
 
@@ -143,93 +148,133 @@ a camiones refrigerados.
      *
      *
 
-dejo el esqueleto para que lo debatamos por discord
-    private int mejorTiempo;
-    private int[] mejorAsignacion;
+dejo el esqueleto para que lo debatamos por discord*/
 
-    public int[] asignarTareas(
-            int[] tareas,
-            int cantidadProcesadores) {
 
-        int[] cargas = new int[cantidadProcesadores];
 
-        int[] asignacionActual = new int[tareas.length];
 
-        mejorTiempo = Integer.MAX_VALUE;
+    public double backtracking() {
 
-        mejorAsignacion =
-                new int[tareas.length];
+        mejorPeso = Double.MAX_VALUE;
+        mejorAsignacion = new HashMap<>();
 
-        asignarProcesos(
-                tareas,
+        HashMap<Camion, ArrayList<Paquete>> asignacionActual = new HashMap<>();
+
+        for (Camion c : camiones) {
+            asignacionActual.put(c, new ArrayList<>());
+        }
+
+        backtracking(
                 0,
-                cargas,
-                asignacionActual);
+                asignacionActual,
+                0.0);
 
-        return mejorAsignacion;
+        return mejorPeso;
     }
-    *
-    *  private void asignarProcesos(int[] tareas, int index, int[] cargas,
-                                 int[] asignacionActual) {
-        // caso base
-        if (index == tareas.length) {
 
-            int tiempoTotal = obtenerMaximo(cargas);
+    private void backtracking(
+            int indicePaquete,
+            HashMap<Camion, ArrayList<Paquete>> asignacionActual,
+            double pesoNoAsignadoActual) {
 
-            if (tiempoTotal < mejorTiempo) {
+        // CASO BASE
+        if (indicePaquete == paquetes.size()) {
 
-                mejorTiempo = tiempoTotal;
+            if (pesoNoAsignadoActual < mejorPeso) {
 
-                mejorAsignacion = Arrays.copyOf(asignacionActual,
-                                asignacionActual.length);
+                mejorPeso = pesoNoAsignadoActual;
+
+                mejorAsignacion = copiarAsignacion(
+                        asignacionActual);
             }
 
             return;
         }
 
-        // probar cada procesador
-        for (int p = 0; p < cargas.length; p++) {
+        Paquete paquete =
+                paquetes.get(indicePaquete);
 
-            // asignar tarea al procesador p
-            cargas[p] += tareas[index];
+        // OPCION 1:
+        // Intentar asignarlo a cada camión válido
 
-            asignacionActual[index] = p;
+        for (Camion camion : camiones) {
 
-            asignarProcesos(
-                    tareas,
-                    index + 1,
-                    cargas,
-                    asignacionActual);
+            if (puedeAsignarse(
+                    paquete,
+                    camion,
+                    asignacionActual)) {
 
-            // BACKTRACKING
-            cargas[p] -= tareas[index];
-        }
-    }
+                asignacionActual
+                        .get(camion)
+                        .add(paquete);
 
-    private int obtenerMaximo(int[] cargas) {
+                backtracking(
+                        indicePaquete + 1,
+                        asignacionActual,
+                        pesoNoAsignadoActual);
 
-        int max = cargas[0];
+                // BACKTRACK
 
-        for (int c : cargas) {
-
-            if (c > max) {
-                max = c;
+                asignacionActual
+                        .get(camion)
+                        .remove(paquete);
             }
         }
 
-        return max;
-     }
-         * */
+        // OPCION 2:
+        // dejar el paquete afuera
 
-
-    public double backtracking(){
-
-
-
-
-
-        return 0.0;
+        backtracking(
+                indicePaquete + 1,
+                asignacionActual,
+                pesoNoAsignadoActual
+                        + paquete.getPesoKg());
     }
+
+    private boolean puedeAsignarse(
+            Paquete paquete,
+            Camion camion,
+            HashMap<Camion, ArrayList<Paquete>> asignacion) {
+
+        if (paquete.isContieneAlimentos()
+                && !camion.isRefrigerado()) {
+
+            return false;
+        }
+
+        double pesoActual = 0;
+
+        for (Paquete p :
+                asignacion.get(camion)) {
+
+            pesoActual += p.getPesoKg();
+        }
+
+        return pesoActual +
+                paquete.getPesoKg()
+                <= camion.getCapacidadKg();
+    }
+
+
+
+    private HashMap<Camion, ArrayList<Paquete>>
+    copiarAsignacion(
+            HashMap<Camion, ArrayList<Paquete>> original) {
+
+        HashMap<Camion, ArrayList<Paquete>> copia =
+                new HashMap<>();
+
+        for (Camion c : original.keySet()) {
+
+            copia.put(
+                    c,
+                    new ArrayList<>(
+                            original.get(c)));
+        }
+
+        return copia;
+    }
+
 
 
 
@@ -248,19 +293,32 @@ dejo el esqueleto para que lo debatamos por discord
         ArrayList<Paquete> paquetesGreedyUrgentes = new ArrayList<>();
         ArrayList<Paquete> paquetesGreedyMenosUrgentes = new ArrayList<>();
 
-        if(paquetes==null) return 00.00;
+        if(paquetes==null) {
+            System.out.println("Andamos sin paquetes.");
+            return 00.00;
+        }
         else{
             if(urgenciaMinima>urgenciaMaxima){
                 int aux = urgenciaMaxima;
                 urgenciaMaxima = urgenciaMinima;
                 urgenciaMinima = aux;
             }
-            paquetesGreedyUrgentes = (ArrayList<Paquete>) this.servicio3(urgenciaMinima,urgenciaMaxima);
-            paquetesGreedyMenosUrgentes = (ArrayList<Paquete>) this.servicio3(0,urgenciaMinima);
+            paquetesGreedyUrgentes = new ArrayList<Paquete>(this.servicio3(urgenciaMinima,urgenciaMaxima));
+            paquetesGreedyMenosUrgentes = new ArrayList<Paquete>(this.servicio3(0,urgenciaMinima));
         }
 
-        if(camiones==null) return 0.0;
-        else camionesGreedy = camiones;
+        if(camiones==null) {
+            System.out.println("Andamos sin camiones.");
+            double pesoTotal = 0;
+            for (Paquete p: paquetesGreedyUrgentes) {
+                pesoTotal += p.getPesoKg();
+            }
+            for (Paquete p: paquetesGreedyMenosUrgentes) {
+                pesoTotal += p.getPesoKg();
+            }
+            return pesoTotal;
+        }
+        else camionesGreedy = new ArrayList<>(this.camiones);
 
         //vamos a ordenar camiones por peso
         camionesGreedy.sort(

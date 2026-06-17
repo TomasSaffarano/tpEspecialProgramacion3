@@ -36,12 +36,15 @@ public class Main {
         System.out.println("---------------------------------------- todos:");
         System.out.println(servicios.servicio3(2,100));
 */
+        
 
         //parte dos
 
         //greedy:
 
         System.out.println(servicios.greedy());
+
+        System.out.println(servicios.backtracking());
 
 
 
