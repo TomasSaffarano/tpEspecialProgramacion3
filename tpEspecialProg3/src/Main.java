@@ -9,7 +9,7 @@ public class Main {
 
 
         //pruebas primera parte
-/*
+
         // servicio 1
         System.out.println(servicios.servicio1("noexiste"));
         System.out.println(servicios.servicio1("P001"));
@@ -18,10 +18,10 @@ public class Main {
         System.out.println(servicios.servicio2(true));
         System.out.println("----------------------------------------");
         System.out.println(servicios.servicio2(false));
-*/
+
 
         // servicio 3
-        /*
+
         System.out.println(servicios.servicio3(-1,6));
         System.out.println("----------------------------------------");
         System.out.println(servicios.servicio3(50,1));
@@ -35,7 +35,7 @@ public class Main {
 
         System.out.println("---------------------------------------- todos:");
         System.out.println(servicios.servicio3(2,100));
-*/
+
         
 
         //parte dos

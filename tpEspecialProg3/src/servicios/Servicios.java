@@ -185,6 +185,15 @@ a camiones refrigerados.
             asignacionActual.put(c, new ArrayList<>());
         }
 
+        pesoActual = new HashMap<>();
+
+        for (Camion c : camiones) {
+
+            asignacionActual.put(c, new ArrayList<>());
+
+            pesoActual.put(c, 0.0);
+        }
+
         backtracking(
                 0,
                 asignacionActual,
@@ -283,10 +292,10 @@ a camiones refrigerados.
             return false;
         }
 
-
         return pesoActual.get(camion) +
-                paquete.getPesoKg()
-                <= camion.getCapacidadKg();
+                    paquete.getPesoKg()
+                    <= camion.getCapacidadKg();
+
     }
 
 
