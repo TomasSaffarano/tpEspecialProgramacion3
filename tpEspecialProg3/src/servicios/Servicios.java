@@ -16,6 +16,7 @@ public class Servicios {
     //optimizacion servicio 1
 
 
+    private int estadosGenerados;
     private double mejorPeso;
     private HashMap<Camion, ArrayList<Paquete>> mejorAsignacion;
     private HashMap<Camion,Double> pesoActual;
@@ -174,7 +175,7 @@ a camiones refrigerados.
     //O((C+1)^P)
     // porque es O(P + private backtracking), gana el del recursivo
     public double backtracking() {
-
+        this.estadosGenerados = 0;
         mejorPeso = Double.MAX_VALUE;
         mejorAsignacion = new HashMap<>();
 
@@ -188,6 +189,8 @@ a camiones refrigerados.
                 0,
                 asignacionActual,
                 0.0);
+
+        System.out.println("Estados generados: " + estadosGenerados);
 
         return mejorPeso;
     }
@@ -206,6 +209,8 @@ a camiones refrigerados.
             double pesoNoAsignadoActual) {
 
         // CASO BASE
+        this.estadosGenerados++;
+
         if (indicePaquete == paquetes.size()) {
 
             if (pesoNoAsignadoActual < mejorPeso) {
@@ -307,10 +312,12 @@ a camiones refrigerados.
 
 
 
-
-
-
 /*
+*Complejidad computacional del backtracking
+* Sea:
+n = cantidad de paquetes
+m = cantidad de camiones
+En el peor caso, cada paquete tiene:
 *
 * Servicio 3. llamado dos veces O(P) p paquetes
 * sort camiones: O(C log C) c camiones
@@ -319,6 +326,18 @@ a camiones refrigerados.
 * calcular resto: O(P)
 * total: O(P log P + C log C + C*P)
 *
+*
+*Estrategia greedy
+
+Nuestro enfoque es:
+
+Ordenar camiones por mayor capacidad
+Ordenar paquetes:
+Primero los más urgentes
+Luego los menos urgentes
+Dentro de cada grupo: mayor peso primero
+Para cada camión:
+Se intentara meter paquetes mientras haya espacio
 * */
 
     public double greedy(){
@@ -432,28 +451,20 @@ a camiones refrigerados.
     }
 
 
-
-
-
-    /*
-     *
-     *
-     *   METODOS INTERNOS AUXILIARES
-     *
-     *
-     *. queda comentado por no volver a ser utilizada la logica por ahora. veremos segunda parte
-     * */
 /*
 
-    //COMPLEJIDAD O(n) n: cantidad paquetes
-    private Paquete getPaquetePorCodigo(String codigoPaquete) {
-        for (Paquete paquete : paquetes) {
-            if (paquete.getCodigo().equals(codigoPaquete)) {
-                return paquete;
-            }
-        }
-        return null;
-    }
+  Complejidad computacional del metodo greedy
+    Ordenar camiones:
+    O(mlogm)
+    Ordenar paquetes:
+    O(nlogn)
+    Asignación:
+    Por cada camión → recorrés paquetes
+    En peor caso:  O(m*n)
+
+     Total:   O(nlogn+mlogm+m⋅n)
+     Si ponemos la complejidad predominante
+     O(m*n)
 
 */
 
