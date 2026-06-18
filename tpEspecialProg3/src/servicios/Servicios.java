@@ -10,7 +10,7 @@ public class Servicios {
     private ArrayList<Camion> camiones;
     private ArrayList<Paquete> paquetes;
 
-
+    private int estadosGenerados;
     private double mejorPeso;
     private HashMap<Camion, ArrayList<Paquete>> mejorAsignacion;
     //variables para optimizacion de paso de informacion en metodo backtracking
@@ -147,15 +147,26 @@ capacidad de cada camión está definida en el archivo de entrada.
 • Segundo, los paquetes que contienen alimentos sólo podrán ser asignados
 a camiones refrigerados.
      *
-     *
+     * Estrategia Backtracking
+
+El algoritmo explora todas las combinaciones posibles de asignación de paquetes a camiones.
+Para cada paquete:
+Se prueba asignarlo a cada camión válido
+O decidís no asignarlo
+Esto genera un árbol de decisiones donde:
+Cada nivel = un paquete
+Cada rama = decisión (a qué camión o no asignar)
+El objetivo es minimizar el peso no asignado, por eso:
+Vas acumulando pesoNoAsignadoActual
+Te quedas con la mejor solución global (mejorPeso)
      *
 
-dejo el esqueleto para que lo debatamos por discord*/
+*/
 
 
     // O(C) C camiones
     public double backtracking() {
-
+        this.estadosGenerados = 0;
         mejorPeso = Double.MAX_VALUE;
         mejorAsignacion = new HashMap<>();
 
@@ -169,6 +180,8 @@ dejo el esqueleto para que lo debatamos por discord*/
                 0,
                 asignacionActual,
                 0.0);
+
+        System.out.println("Estados generados: " + estadosGenerados);
 
         return mejorPeso;
     }
@@ -186,6 +199,8 @@ dejo el esqueleto para que lo debatamos por discord*/
             double pesoNoAsignadoActual) {
 
         // CASO BASE
+        this.estadosGenerados++;
+
         if (indicePaquete == paquetes.size()) {
 
             if (pesoNoAsignadoActual < mejorPeso) {
@@ -288,13 +303,32 @@ dejo el esqueleto para que lo debatamos por discord*/
 
 
 
-
-
-
 /*
+*Complejidad computacional del backtracking
+* Sea:
+n = cantidad de paquetes
+m = cantidad de camiones
+En el peor caso, cada paquete tiene:
 *
-* Complejidad O()
+m opciones (camiones)
++1 opción (no asignarlo)
+ Entonces:
+Complejidad del backtracking = O((m+1)^n
+
+
 *
+*
+*Estrategia greedy
+
+Nuestro enfoque es:
+
+Ordenar camiones por mayor capacidad
+Ordenar paquetes:
+Primero los más urgentes
+Luego los menos urgentes
+Dentro de cada grupo: mayor peso primero
+Para cada camión:
+Se intentara meter paquetes mientras haya espacio
 * */
 
     //devuelve kg restantes
@@ -409,28 +443,20 @@ dejo el esqueleto para que lo debatamos por discord*/
     }
 
 
-
-
-
-    /*
-     *
-     *
-     *   METODOS INTERNOS AUXILIARES
-     *
-     *
-     *. queda comentado por no volver a ser utilizada la logica por ahora. veremos segunda parte
-     * */
 /*
 
-    //COMPLEJIDAD O(n) n: cantidad paquetes
-    private Paquete getPaquetePorCodigo(String codigoPaquete) {
-        for (Paquete paquete : paquetes) {
-            if (paquete.getCodigo().equals(codigoPaquete)) {
-                return paquete;
-            }
-        }
-        return null;
-    }
+  Complejidad computacional del metodo greedy
+    Ordenar camiones:
+    O(mlogm)
+    Ordenar paquetes:
+    O(nlogn)
+    Asignación:
+    Por cada camión → recorrés paquetes
+    En peor caso:  O(m*n)
+
+     Total:   O(nlogn+mlogm+m⋅n)
+     Si ponemos la complejidad predominante
+     O(m*n)
 
 */
 
