@@ -292,8 +292,7 @@ a camiones refrigerados.
 
 
     //O(C + P) C camiones y P paquetes
-    private HashMap<Camion, ArrayList<Paquete>>
-    copiarAsignacion(
+    private HashMap<Camion, ArrayList<Paquete>> copiarAsignacion(
             HashMap<Camion, ArrayList<Paquete>> original) {
 
         HashMap<Camion, ArrayList<Paquete>> copia =
@@ -315,8 +314,8 @@ a camiones refrigerados.
 /*
 *Complejidad computacional del backtracking
 * Sea:
-n = cantidad de paquetes
-m = cantidad de camiones
+p = cantidad de paquetes
+c = cantidad de camiones
 En el peor caso, cada paquete tiene:
 *
 * Servicio 3. llamado dos veces O(P) p paquetes
@@ -455,16 +454,14 @@ Se intentara meter paquetes mientras haya espacio
 
   Complejidad computacional del metodo greedy
     Ordenar camiones:
-    O(mlogm)
+    O(c log c)
     Ordenar paquetes:
-    O(nlogn)
+    O(p log p)
     Asignación:
     Por cada camión → recorrés paquetes
-    En peor caso:  O(m*n)
+    En peor caso:  O(c*p)
 
-     Total:   O(nlogn+mlogm+m⋅n)
-     Si ponemos la complejidad predominante
-     O(m*n)
+     Total:   O(c log c+ plog p+ c*p)
 
 */
 
