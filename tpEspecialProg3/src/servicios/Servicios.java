@@ -7,16 +7,16 @@ import java.util.*;
 
 public class Servicios {
 
-    private  ArrayList<Camion> camiones;
-    private  ArrayList<Paquete> paquetes;
+    private ArrayList<Camion> camiones;
+    private ArrayList<Paquete> paquetes;
 
 
     private double mejorPeso;
-    private HashMap<Camion,ArrayList<Paquete>> mejorAsignacion;
+    private HashMap<Camion, ArrayList<Paquete>> mejorAsignacion;
     //variables para optimizacion de paso de informacion en metodo backtracking
 
-    private int urgenciaMaxima=100;
-    private int urgenciaMinima=80;
+    private int urgenciaMaxima = 100;
+    private int urgenciaMinima = 80;
     //variables de clase permite que sea editable solo en codigo (por desarrolladores o podria ser un admin si se
     // habilita un getter y setter) y que sea customizable por cliente...
 
@@ -26,24 +26,24 @@ public class Servicios {
      * ya que recorre todos los camiones y todos los paquetes, ademas de
      * reocorrer la estructura de archivos para encontrar los csv y parsearlos
      */
-    public Servicios(String pathCamiones, String pathPaquetes){
+    public Servicios(String pathCamiones, String pathPaquetes) {
         camiones = new ArrayList<>();
         camiones = CSVReader.leerCamiones(pathCamiones);
         paquetes = new ArrayList<>();
-        paquetes =  CSVReader.leerPaquetes(pathPaquetes);
+        paquetes = CSVReader.leerPaquetes(pathPaquetes);
     }
 
-    public Servicios(String pathCamiones, String pathPaquetes, int urgenciaMinima, int urgenciaMaxima){
+    public Servicios(String pathCamiones, String pathPaquetes, int urgenciaMinima, int urgenciaMaxima) {
         camiones = new ArrayList<>();
         camiones = CSVReader.leerCamiones(pathCamiones);
         paquetes = new ArrayList<>();
-        paquetes =  CSVReader.leerPaquetes(pathPaquetes);
+        paquetes = CSVReader.leerPaquetes(pathPaquetes);
         this.urgenciaMinima = urgenciaMinima;
         this.urgenciaMaxima = urgenciaMaxima;
     }
 
     /*
-     * Expresar la complejidad temporal del servicio 1: O(n) n: cantidad de paquetes.
+     * Expresar la complejidad temporal del servicio 1: O(p) p: cantidad de paquetes.
      * La complejidad se calcula por tener que recorrer todos los paquetes.
      */
     public Paquete servicio1(String codigoPaquete) {
@@ -51,11 +51,11 @@ public class Servicios {
         /*Servicio 1: Dado un código de paquete (String), retornar toda la información
         del paquete asociado. En caso de no existir, retornar null.*/
 
-        if(paquetes==null){
+        if (paquetes == null) {
             return null;
         }
 
-        if(codigoPaquete==null){
+        if (codigoPaquete == null) {
             return null;
         }
 
@@ -68,46 +68,48 @@ public class Servicios {
 
         return null;
     }
+
     /*
-     * Expresar la complejidad temporal del servicio 2: O(n) n: cantidad paquetes
+     * Expresar la complejidad temporal del servicio 2: O(p) p: cantidad paquetes
      * recorro una vez el array de paquetes
      */
     public List<Paquete> servicio2(boolean contieneAlimentos) {
         /* Dado un booleano que indica si se buscan paquetes que
-        * contienen alimentos (true) o que no contienen alimentos (false), retornar el
-        * listado de paquetes correspondiente. */
-        if(paquetes==null){
+         * contienen alimentos (true) o que no contienen alimentos (false), retornar el
+         * listado de paquetes correspondiente. */
+        if (paquetes == null) {
             return new ArrayList<>();
         }
 
 
         List<Paquete> paquetesQueCumplen = new ArrayList<>();
-        for(Paquete paquete : paquetes){
-            if(paquete.isContieneAlimentos()==contieneAlimentos){
+        for (Paquete paquete : paquetes) {
+            if (paquete.isContieneAlimentos() == contieneAlimentos) {
                 paquetesQueCumplen.add(paquete);
             }
         }
         return paquetesQueCumplen;
     }
+
     /*
-     * Expresar la complejidad temporal del servicio 3: O(n) n: cantidad paquetes
+     * Expresar la complejidad temporal del servicio 3: O(p) p: cantidad paquetes
      * recorro una vez el array de paquetes
      */
     public List<Paquete> servicio3(int urgenciaMinima, int
             urgenciaMaxima) {
         /* Dados dos valores enteros que representan un nivel de urgencia
-        * mínimo y máximo, retornar todos los paquetes cuyo nivel de urgencia se
-        * encuentre dentro de ese rango (inclusive).*/
+         * mínimo y máximo, retornar todos los paquetes cuyo nivel de urgencia se
+         * encuentre dentro de ese rango (inclusive).*/
 
-        if(paquetes==null){
+        if (paquetes == null) {
             return new ArrayList<>();
         }
 
-        if(urgenciaMinima<0 || urgenciaMaxima<0){
+        if (urgenciaMinima < 0 || urgenciaMaxima < 0) {
             return new ArrayList<>();
         }
 
-        if(urgenciaMinima>urgenciaMaxima){
+        if (urgenciaMinima > urgenciaMaxima) {
             int aux = urgenciaMaxima;
             urgenciaMaxima = urgenciaMinima;
             urgenciaMinima = aux;
@@ -115,10 +117,10 @@ public class Servicios {
         }
 
         List<Paquete> paquetesQueCumplen = new ArrayList<>();
-        for(Paquete paquete : paquetes){
+        for (Paquete paquete : paquetes) {
             int urgencia = paquete.getNivelUrgencia();
-            if(urgenciaMinima <= urgencia &&
-                    urgencia <= urgenciaMaxima){
+            if (urgenciaMinima <= urgencia &&
+                    urgencia <= urgenciaMaxima) {
                 paquetesQueCumplen.add(paquete);
             }
         }
@@ -151,8 +153,7 @@ a camiones refrigerados.
 dejo el esqueleto para que lo debatamos por discord*/
 
 
-
-
+    // O(C) C camiones
     public double backtracking() {
 
         mejorPeso = Double.MAX_VALUE;
@@ -172,6 +173,13 @@ dejo el esqueleto para que lo debatamos por discord*/
         return mejorPeso;
     }
 
+    /*Para cada paquete se busca asignar en cada camión o no asignar...
+    Cantidad de ramas: (C + 1) & Profundidad: P
+    --------> c.c. Árbol (C+1)^P ---> Complejidad sin contar verificaciones: O((C+1)^P),
+    se le agrega * P para considerar cada verificación (el bucle se multiplica)
+    -> almacenar el peso acual optimiza la c.c a */
+
+    // TOTAL: O(P * (C+1)^P) p paquetes, c camiones
     private void backtracking(
             int indicePaquete,
             HashMap<Camion, ArrayList<Paquete>> asignacionActual,
@@ -231,6 +239,8 @@ dejo el esqueleto para que lo debatamos por discord*/
                         + paquete.getPesoKg());
     }
 
+
+    // O(M) M = paquetes cargados en ese camión
     private boolean puedeAsignarse(
             Paquete paquete,
             Camion camion,
@@ -257,6 +267,7 @@ dejo el esqueleto para que lo debatamos por discord*/
 
 
 
+    //O(C + P) C camiones y P paquetes
     private HashMap<Camion, ArrayList<Paquete>>
     copiarAsignacion(
             HashMap<Camion, ArrayList<Paquete>> original) {
