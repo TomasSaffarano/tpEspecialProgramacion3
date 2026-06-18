@@ -353,6 +353,7 @@ Se intentara meter paquetes mientras haya espacio
         ArrayList<Camion> camionesGreedy = new ArrayList<>();
         ArrayList<Paquete> paquetesGreedyUrgentes = new ArrayList<>();
         ArrayList<Paquete> paquetesGreedyMenosUrgentes = new ArrayList<>();
+        estadosGenerados=0;
 
         if(paquetes==null) {
             System.out.println("Andamos sin paquetes.");
@@ -425,6 +426,8 @@ Se intentara meter paquetes mientras haya espacio
 
             while(it.hasNext()){
 
+                estadosGenerados++;
+
                 Paquete paq = it.next();
 
                 //si no es refrigerado el camion pero paquete es de alimentos, se saltea...
@@ -455,6 +458,11 @@ Se intentara meter paquetes mientras haya espacio
                 resto +=paquete.getPesoKg();
             }
         }
+        this.mostrarMejorAsignacion();
+        System.out.println(
+                "Cantidad de candidatos considerados: "
+                        + estadosGenerados
+        );
         return resto;
     }
 
@@ -473,5 +481,42 @@ Se intentara meter paquetes mientras haya espacio
      Total:   O(c log c+ plog p+ c*p)
 
 */
+    public void mostrarMejorAsignacion() {
 
+        System.out.println("===== SOLUCION OBTENIDA GREEDY =====");
+
+        for (Camion camion : mejorAsignacion.keySet()) {
+
+            System.out.println(
+                    "Camion " + camion.getPatente()
+                            + " (" + camion.getCapacidadKg() + " kg)"
+            );
+
+            double pesoCamion = 0;
+
+            for (Paquete paquete : mejorAsignacion.get(camion)) {
+
+                System.out.println(
+                        "   - " + paquete.getCodigo()
+                                + " (" + paquete.getPesoKg() + " kg)"
+                );
+
+                pesoCamion += paquete.getPesoKg();
+            }
+
+            System.out.println(
+                    "   Peso cargado: "
+                            + pesoCamion
+                            + " kg"
+            );
+
+            System.out.println();
+        }
+
+        System.out.println(
+                "Peso no asignado: "
+                        + mejorPeso
+                        + " kg"
+        );
+    }
 }
