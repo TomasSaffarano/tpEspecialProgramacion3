@@ -11,8 +11,14 @@ public class Servicios {
     private ArrayList<Paquete> paquetes;
 
 
+
+    private HashMap<String,Paquete> paquetePorCodigo;
+    //optimizacion servicio 1
+
+
     private double mejorPeso;
     private HashMap<Camion, ArrayList<Paquete>> mejorAsignacion;
+    private HashMap<Camion,Double> pesoActual;
     //variables para optimizacion de paso de informacion en metodo backtracking
 
     private int urgenciaMaxima = 100;
@@ -20,19 +26,31 @@ public class Servicios {
     //variables de clase permite que sea editable solo en codigo (por desarrolladores o podria ser un admin si se
     // habilita un getter y setter) y que sea customizable por cliente...
 
-
     /*
-     * Expresar la complejidad temporal del constructor: O(c+p)
-     * ya que recorre todos los camiones y todos los paquetes, ademas de
-     * reocorrer la estructura de archivos para encontrar los csv y parsearlos
+     * O(C + P)
+     * Leer camiones: O(C)
+     * Leer paquetes: O(P)
+     * Inicializar HashMap por código: O(P)
+     *
+     * O(C + P + P) => O(C + P)
      */
     public Servicios(String pathCamiones, String pathPaquetes) {
         camiones = new ArrayList<>();
         camiones = CSVReader.leerCamiones(pathCamiones);
         paquetes = new ArrayList<>();
         paquetes = CSVReader.leerPaquetes(pathPaquetes);
+        this.iniciarPaquetePorCodigo();
     }
 
+
+    /*
+     * O(C + P)
+     * Leer camiones: O(C)
+     * Leer paquetes: O(P)
+     * Inicializar HashMap por código: O(P)
+     *
+     * O(C + P + P) => O(C + P)
+     */
     public Servicios(String pathCamiones, String pathPaquetes, int urgenciaMinima, int urgenciaMaxima) {
         camiones = new ArrayList<>();
         camiones = CSVReader.leerCamiones(pathCamiones);
@@ -40,11 +58,22 @@ public class Servicios {
         paquetes = CSVReader.leerPaquetes(pathPaquetes);
         this.urgenciaMinima = urgenciaMinima;
         this.urgenciaMaxima = urgenciaMaxima;
+        this.iniciarPaquetePorCodigo();
+    }
+
+    private void iniciarPaquetePorCodigo(){
+        paquetePorCodigo = new HashMap<>();
+        if(this.paquetes!=null){
+            for(Paquete paquete:paquetes){
+                paquetePorCodigo.put(paquete.getCodigo(),paquete);
+            }
+        }
     }
 
     /*
-     * Expresar la complejidad temporal del servicio 1: O(p) p: cantidad de paquetes.
-     * La complejidad se calcula por tener que recorrer todos los paquetes.
+     * Expresar la complejidad temporal del servicio 1:
+     * O(1)
+     * La complejidad se optimiza por guardar el map paquetes por codigo.
      */
     public Paquete servicio1(String codigoPaquete) {
 
@@ -58,19 +87,11 @@ public class Servicios {
         if (codigoPaquete == null) {
             return null;
         }
-
-        for (Paquete paquete : paquetes) {
-            if (paquete.getCodigo().equals(codigoPaquete)) {
-                //retorna la primera vez que coincide, se eliminan segundas coincidencias
-                return paquete;
-            }
-        }
-
-        return null;
+        return paquetePorCodigo.get(codigoPaquete);
     }
 
     /*
-     * Expresar la complejidad temporal del servicio 2: O(p) p: cantidad paquetes
+     * complejidad temporal O(p) p: cantidad paquetes
      * recorro una vez el array de paquetes
      */
     public List<Paquete> servicio2(boolean contieneAlimentos) {
@@ -148,12 +169,10 @@ capacidad de cada camión está definida en el archivo de entrada.
 a camiones refrigerados.
      *
      *
-     *
+     */
 
-dejo el esqueleto para que lo debatamos por discord*/
-
-
-    // O(C) C camiones
+    //O((C+1)^P)
+    // porque es O(P + private backtracking), gana el del recursivo
     public double backtracking() {
 
         mejorPeso = Double.MAX_VALUE;
@@ -173,13 +192,14 @@ dejo el esqueleto para que lo debatamos por discord*/
         return mejorPeso;
     }
 
+
     /*Para cada paquete se busca asignar en cada camión o no asignar...
     Cantidad de ramas: (C + 1) & Profundidad: P
-    --------> c.c. Árbol (C+1)^P ---> Complejidad sin contar verificaciones: O((C+1)^P),
-    se le agrega * P para considerar cada verificación (el bucle se multiplica)
+    --------> c.c. Árbol (C+1)^P ---> Complejidad sin contar verificaciones: O((C+1)^P)
+    verificacion actual O(1)
     -> almacenar el peso acual optimiza la c.c a */
 
-    // TOTAL: O(P * (C+1)^P) p paquetes, c camiones
+    // TOTAL: O((C+1)^P) p paquetes, c camiones
     private void backtracking(
             int indicePaquete,
             HashMap<Camion, ArrayList<Paquete>> asignacionActual,
@@ -216,6 +236,10 @@ dejo el esqueleto para que lo debatamos por discord*/
                         .get(camion)
                         .add(paquete);
 
+                double pesoCamionPrevio = pesoActual.get(camion);
+
+                pesoActual.put(camion, pesoCamionPrevio+ paquete.getPesoKg());
+
                 backtracking(
                         indicePaquete + 1,
                         asignacionActual,
@@ -226,6 +250,8 @@ dejo el esqueleto para que lo debatamos por discord*/
                 asignacionActual
                         .get(camion)
                         .remove(paquete);
+
+                pesoActual.put(camion, pesoCamionPrevio);
             }
         }
 
@@ -240,7 +266,7 @@ dejo el esqueleto para que lo debatamos por discord*/
     }
 
 
-    // O(M) M = paquetes cargados en ese camión
+    // O(1) optimizacion por map peso actual
     private boolean puedeAsignarse(
             Paquete paquete,
             Camion camion,
@@ -252,15 +278,8 @@ dejo el esqueleto para que lo debatamos por discord*/
             return false;
         }
 
-        double pesoActual = 0;
 
-        for (Paquete p :
-                asignacion.get(camion)) {
-
-            pesoActual += p.getPesoKg();
-        }
-
-        return pesoActual +
+        return pesoActual.get(camion) +
                 paquete.getPesoKg()
                 <= camion.getCapacidadKg();
     }
@@ -293,11 +312,15 @@ dejo el esqueleto para que lo debatamos por discord*/
 
 /*
 *
-* Complejidad O()
+* Servicio 3. llamado dos veces O(P) p paquetes
+* sort camiones: O(C log C) c camiones
+* sort urgentes: O(U log U) + sort menos urgentes: O(M log M): O(P log P) p paquetes
+* for y while de greedy: O(C * P)
+* calcular resto: O(P)
+* total: O(P log P + C log C + C*P)
 *
 * */
 
-    //devuelve kg restantes
     public double greedy(){
 
         ArrayList<Camion> camionesGreedy = new ArrayList<>();
