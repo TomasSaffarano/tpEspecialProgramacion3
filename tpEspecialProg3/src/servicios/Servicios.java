@@ -173,6 +173,9 @@ a camiones refrigerados.
      *
      */
 
+
+
+
     //O((C+1)^P)
     // porque es O(P + private backtracking), gana el del recursivo
     public double backtracking() {
@@ -182,9 +185,6 @@ a camiones refrigerados.
 
         HashMap<Camion, ArrayList<Paquete>> asignacionActual = new HashMap<>();
 
-        for (Camion c : camiones) {
-            asignacionActual.put(c, new ArrayList<>());
-        }
 
         pesoActual = new HashMap<>();
 
@@ -245,8 +245,7 @@ a camiones refrigerados.
 
             if (puedeAsignarse(
                     paquete,
-                    camion,
-                    asignacionActual)) {
+                    camion)) {
 
                 asignacionActual
                         .get(camion)
@@ -285,8 +284,7 @@ a camiones refrigerados.
     // O(1) optimizacion por map peso actual
     private boolean puedeAsignarse(
             Paquete paquete,
-            Camion camion,
-            HashMap<Camion, ArrayList<Paquete>> asignacion) {
+            Camion camion) {
 
         if (paquete.isContieneAlimentos()
                 && !camion.isRefrigerado()) {
@@ -323,20 +321,6 @@ a camiones refrigerados.
 
 
 /*
-*Complejidad computacional del backtracking
-* Sea:
-p = cantidad de paquetes
-c = cantidad de camiones
-En el peor caso, cada paquete tiene:
-*
-* Servicio 3. llamado dos veces O(P) p paquetes
-* sort camiones: O(C log C) c camiones
-* sort urgentes: O(U log U) + sort menos urgentes: O(M log M): O(P log P) p paquetes
-* for y while de greedy: O(C * P)
-* calcular resto: O(P)
-* total: O(P log P + C log C + C*P)
-*
-*
 *Estrategia greedy
 
 Nuestro enfoque es:
