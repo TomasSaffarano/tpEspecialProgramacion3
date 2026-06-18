@@ -6,7 +6,7 @@ public class Main {
         //"/csv/camiones.csv"
 
         Servicios servicios = new Servicios("/csv/camiones.csv", "/csv/paquetes.csv");
-
+/*
 
         //pruebas primera parte
 
@@ -36,7 +36,7 @@ public class Main {
         System.out.println("---------------------------------------- todos:");
         System.out.println(servicios.servicio3(2,100));
 
-        
+        */
 
         //parte dos
 

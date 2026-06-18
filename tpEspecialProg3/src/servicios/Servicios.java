@@ -24,6 +24,7 @@ public class Servicios {
 
     private int urgenciaMaxima = 100;
     private int urgenciaMinima = 80;
+    private HashMap<Camion, ArrayList<Paquete>> asignacionGreedy;
     //variables de clase permite que sea editable solo en codigo (por desarrolladores o podria ser un admin si se
     // habilita un getter y setter) y que sea customizable por cliente...
 
@@ -199,6 +200,7 @@ a camiones refrigerados.
                 asignacionActual,
                 0.0);
 
+        this.mostrarMejorAsignacion();
         System.out.println("Estados generados: " + estadosGenerados);
 
         return mejorPeso;
@@ -355,6 +357,8 @@ Se intentara meter paquetes mientras haya espacio
         ArrayList<Paquete> paquetesGreedyMenosUrgentes = new ArrayList<>();
         estadosGenerados=0;
 
+        asignacionGreedy = new HashMap<>();
+
         if(paquetes==null) {
             System.out.println("Andamos sin paquetes.");
             return 00.00;
@@ -381,6 +385,11 @@ Se intentara meter paquetes mientras haya espacio
             return pesoTotal;
         }
         else camionesGreedy = new ArrayList<>(this.camiones);
+
+
+        for(Camion camion : camionesGreedy){
+            asignacionGreedy.put(camion, new ArrayList<>());
+        }
 
         //vamos a ordenar camiones por peso
         camionesGreedy.sort(
@@ -421,7 +430,6 @@ Se intentara meter paquetes mientras haya espacio
         for(Camion camion : camionesGreedy){
 
             double pesoDisponible = camion.getCapacidadKg();
-//            List<Paquete> paquetesAlCamion = new ArrayList<>();
             Iterator<Paquete> it = paquetesGreedyTotal.iterator();
 
             while(it.hasNext()){
@@ -438,7 +446,7 @@ Se intentara meter paquetes mientras haya espacio
 
                 if(paq.getPesoKg() <= pesoDisponible){
 
-                    //paquetesAlCamion.add(paq); no retorno una lista de paquetes por camion, sino el kg sobrante
+                    asignacionGreedy.get(camion).add(paq);
 
                     pesoDisponible -= paq.getPesoKg();
 
@@ -458,7 +466,7 @@ Se intentara meter paquetes mientras haya espacio
                 resto +=paquete.getPesoKg();
             }
         }
-        this.mostrarMejorAsignacion();
+        this.mostrarAsignacionGreedy();
         System.out.println(
                 "Cantidad de candidatos considerados: "
                         + estadosGenerados
@@ -481,9 +489,31 @@ Se intentara meter paquetes mientras haya espacio
      Total:   O(c log c+ plog p+ c*p)
 
 */
-    public void mostrarMejorAsignacion() {
+
+
+    public void mostrarAsignacionGreedy() {
 
         System.out.println("===== SOLUCION OBTENIDA GREEDY =====");
+
+        for (Camion camion : asignacionGreedy.keySet()) {
+
+            System.out.println("Camion " + camion.getPatente());
+
+            for (Paquete paquete : asignacionGreedy.get(camion)) {
+
+                System.out.println(
+                        "   - " + paquete.getCodigo()
+                );
+            }
+
+            System.out.println();
+        }
+    }
+
+
+    public void mostrarMejorAsignacion() {
+
+        System.out.println("===== SOLUCION OBTENIDA BACKTRACKING =====");
 
         for (Camion camion : mejorAsignacion.keySet()) {
 
