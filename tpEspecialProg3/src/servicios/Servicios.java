@@ -61,13 +61,17 @@ public class Servicios {
         del paquete asociado. En caso de no existir, retornar null.*/
 
         if (paquetes == null || paquetes.isEmpty()) {
-            return null;
+            return new Paquete(0,"error",1.0,false,0);
         }
 
         if (codigoPaquete == null || codigoPaquete.isEmpty()) {
-            return null;
+            return new Paquete(0,"error",1.0,false,0);
         }
-        return paquetePorCodigo.get(codigoPaquete);
+        if(paquetePorCodigo.containsKey(codigoPaquete)){
+            return paquetePorCodigo.get(codigoPaquete);
+        }
+
+        return new Paquete(0,"error",1.0,false,0);
     }
 
     /*

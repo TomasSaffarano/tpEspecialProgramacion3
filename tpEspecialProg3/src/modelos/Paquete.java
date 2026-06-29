@@ -64,6 +64,9 @@ public class Paquete {
 
     @Override
     public String toString() {
+        if(codigo.equals("error"))
+            return "Error en obtener paquete.";
+
         return "Paquete{" +
                 "id=" + id +
                 ", codigo='" + codigo + '\'' +

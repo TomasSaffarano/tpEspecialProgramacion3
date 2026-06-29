@@ -42,7 +42,7 @@ public class CSVReader {
             br.close();
 
         } catch (Exception e) {
-            System.out.println("ERROR en CSV Reader: "+e.getMessage());
+            System.out.println("ERROR en CSV Reader: "+e.getMessage()+". Se inicializará vacío.");
             return camiones;
         }
 
@@ -81,7 +81,7 @@ public class CSVReader {
             br.close();
 
         } catch (Exception e) {
-            System.out.println("ERROR en CSV Reader: "+e.getMessage());
+            System.out.println("ERROR en CSV Reader: "+e.getMessage()+". Se inicializará vacío.");
             return paquetes;
         }
 
