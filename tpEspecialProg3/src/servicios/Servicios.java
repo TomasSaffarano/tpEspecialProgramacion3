@@ -435,6 +435,7 @@ a camiones refrigerados.
                 "Cantidad de candidatos considerados: "
                         + estadosGenerados
         );
+        System.out.println();
     }
 
 
