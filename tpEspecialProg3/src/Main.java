@@ -42,10 +42,9 @@ public class Main {
 
         //greedy:
 
-        System.out.println("Resultado greedy");
-        System.out.println(servicios.greedy());
-        System.out.println("Resultado backtracking");
-        System.out.println(servicios.backtracking());
+
+        servicios.greedy();
+        servicios.backtracking();
 
 
 
