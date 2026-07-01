@@ -261,10 +261,13 @@ a camiones refrigerados.
 
                 pesoActual.put(camion, pesoCamionPrevio+ paquete.getPesoKg());
 
-                backtracking(
-                        indicePaquete + 1,
-                        asignacionActual,
-                        pesoNoAsignadoActual);
+                //PODA
+                if (pesoNoAsignadoActual < mejorPeso){
+                    backtracking(
+                            indicePaquete + 1,
+                            asignacionActual,
+                            pesoNoAsignadoActual);
+                }
 
                 // BACKTRACK
 
